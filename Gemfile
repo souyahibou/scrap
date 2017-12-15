@@ -7,7 +7,7 @@ end
 
 gem "mogli"
 gem 'omniauth-facebook'
-# gem 'fb_graph2'
+gem 'fb_graph2'
 gem "figaro"				                #ajout
 gem "koala"				               #ajout  gem facebook
 gem "fbgraph"
