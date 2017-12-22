@@ -73,11 +73,15 @@ class ScrapUrlsPros
 
 
       def scrap_hard_links(link)                                                      #utilise une copy de la page via la gem watir au lieu de Nokogiri
+
+        # headless = Headless.new
+        # headless.start
           browser = Watir::Browser.new (:firefox)
           browser.goto(link)
             # sleep 2
           res = browser.body.text
           browser.close;
+        # headless.destroy
           return res;
       end
 
@@ -85,6 +89,9 @@ class ScrapUrlsPros
       def scrap_justdancewithlife_link(link)                                          #scrap particulier
           copy_of_pages=[];
           fin = 13;
+
+        # headless = Headless.new
+        # headless.start
           browser = Watir::Browser.new(:firefox);
           browser.goto(link);
           browser.element(:xpath => "/html/body/div[1]/div/div/main/article/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[1]/a").click;
@@ -97,6 +104,7 @@ class ScrapUrlsPros
               sleep 2;
           end
           browser.close;
+        # headless.destroy
           return  copy_page;   #la derniere page comprends les données des pages précédentes.(code pouvant etre simplifié)
       end
 
