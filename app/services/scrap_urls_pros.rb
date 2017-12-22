@@ -23,27 +23,6 @@ class ScrapUrlsPros
       # #Interaction avec base de données//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-      def save_data_in_CSV_file(table_data)                                           #sauvegarde la table de données dans un fichier CSV
-         CSV.open("the_scrap_2.csv", "w") do |csv|
-           for i in 1..table_data.length
-             csv << [ table_data[i-1][:link], table_data[i-1][:scrap] ];
-           end
-         end
-      end
-
-
-
-      def comp_data_in_CSV_file(table_data)                                           #compare la table de données avec la table de données déja existante (enregistrée au format CSV)
-          arr_of_arrs = CSV.read("the_scrap_2.csv");
-          for i in 1..arr_of_arrs.length
-              table_data[i-1][:change] = ((arr_of_arrs[i-1][1] <=> table_data[i-1][:scrap])==0)? "no chng" : table_data[i-1][:link]; #compare les scraps
-          end
-          return table_data;
-      end
-
-      # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
       #sauvegarde dans google drive
       def save_from_on_GoogleDrive(table_data)
           session = GoogleDrive::Session.from_config("config.json")
@@ -128,7 +107,6 @@ class ScrapUrlsPros
          tab = [];
          list_urls = get_all_professors_urls
          tab = scrap_links_for_all_webpages(list_urls);
-         binding.pry
          comp_data_in_SpreadSheet(tab);          #ouvre la dernière data save , reprend en arg les dateas scrapés et les compares.
          save_from_on_GoogleDrive(tab);
          return tab;
