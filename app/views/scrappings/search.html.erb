@@ -1,0 +1,19 @@
+<h1>Scrapping#search</h1>
+
+
+
+
+<div class="container">
+  <div class="jumbotron">
+    <h1>Your results</h1>
+    <p>Let's see what we have found</p>
+    <%= link_to 'Search again', root_path, class: 'btn btn-primary'%>
+  </div>
+</div> </br>
+
+<p> Nombre events = <%= @var.length %> </p>
+
+
+<% @var.each do |data| %>
+ <p><%= data -%></p>
+<% end %>

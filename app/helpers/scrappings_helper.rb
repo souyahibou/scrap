@@ -1,0 +1,2 @@
+module ScrappingsHelper
+end
