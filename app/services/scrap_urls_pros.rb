@@ -13,8 +13,8 @@ class ScrapUrlsPros
                block_text = (( block_text != "" )? block_text : (  methode = "Watir"; scrap_hard_links(page_pro) ) );   #attention à l'ordre des instruction
                tab_for_all_data << {:link => page_pro, :scrap => block_text, :methode => methode, :date => Time.now}
          end
-               block_text = scrap_justdancewithlife_link('http://www.justdancewithlife.com/calendrier-calendar/').delete(" \t\r\n");
-               tab_for_all_data << {:link => tab_of_hard_pages[:justdance], :scrap => block_text, :methode => "Watir", :date => Time.now}
+               block_text = scrap_justdancewithlife_link(tab_of_hard_pages[:justdance]).delete(" \t\r\n");
+               tab_for_all_data << {:link => tab_of_hard_pages[:justdance], :scrap => block_text, :methode => "Unique with Watir", :date => Time.now}
 
          return tab_for_all_data;
       end
@@ -27,10 +27,10 @@ class ScrapUrlsPros
       def save_from_on_GoogleDrive(table_data)
           session = GoogleDrive::Session.from_config("config.json")
           ws = session.spreadsheet_by_key(ENV["SPEADSHEET_SCRAPPING_URLS"]).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
-           for i in 1..table_data.length
+           for i in 0...table_data.length
              y = 1;
-             table_data[i-1].each do |key, value|
-                 ws[i, y] = table_data[i-1][key]
+             table_data[i].each do |key, value|
+                 ws[i+1, y] = table_data[i][key]
                  y += 1;
              end
            end
@@ -43,8 +43,8 @@ class ScrapUrlsPros
       def comp_data_in_SpreadSheet(table_data)                                           #compare la table de données avec la table de données déja existante (enregistrée au format CSV)
           session = GoogleDrive::Session.from_config("config.json")
           ws = session.spreadsheet_by_key(ENV["SPEADSHEET_SCRAPPING_URLS"]).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
-          for i in 1..table_data.length
-              table_data[i-1][:change] = ((ws[i, 2] <=> table_data[i-1][:scrap])==0)? "No change" : "Yes"; #compare les datas de pages
+          for i in 0...table_data.length
+              table_data[i][:change] = ((ws.rows[i][1] <=> table_data[i][:scrap])==0)? "No change" : "Yes"; #compare les datas de pages
           end
           return table_data;
       end
@@ -75,6 +75,7 @@ class ScrapUrlsPros
       def scrap_hard_links(link)                                                      #utilise une copy de la page via la gem watir au lieu de Nokogiri
           browser = Watir::Browser.new (:firefox)
           browser.goto(link)
+            # sleep 2
           res = browser.body.text
           browser.close;
           return res;
@@ -100,14 +101,13 @@ class ScrapUrlsPros
       end
 
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      # #Exécution code principal//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      # #Exécution code principal////////////////////////////////////////////////#ouvre la dernière data save , reprend en arg les dateas scrapés et les compares.//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
       def perform
          tab = [];
          list_urls = get_all_professors_urls
          tab = scrap_links_for_all_webpages(list_urls);
-         comp_data_in_SpreadSheet(tab);          #ouvre la dernière data save , reprend en arg les dateas scrapés et les compares.
+         comp_data_in_SpreadSheet(tab);
          save_from_on_GoogleDrive(tab);
          return tab;
       end

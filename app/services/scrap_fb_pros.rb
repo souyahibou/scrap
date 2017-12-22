@@ -63,8 +63,8 @@ class ScrapFbPros
       def comp_data_in_SpreadSheet(table_data)                                           #compare la table de données avec la table de données déja existante (enregistrée au format CSV)
           session = GoogleDrive::Session.from_config("config.json")
           ws = session.spreadsheet_by_key( ENV["SPREADSHEET_SCRAPPING_FB_EVENTS"] ).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
-          for i in 1..table_data.length
-              table_data[i-1][:change] = ( ( table_data[i-1].all? {|key, value| ws[i+1, column_code_of_hash_keys[key]] <=> table_data[i-1][key]} )== false)? "No change" : "Yes";
+          for i in 0...table_data.length
+              table_data[i][:change] = ( ( table_data[i].all? {|key, value| ws[i+2, column_code_of_hash_keys[key]] <=> table_data[i][key]} )== false)? "No change" : "Yes";
               # table_data[i-1][:change] = ((ws[i, 2] <=> table_data[i-1].each do |key, value|)==0)? "No change" : "Yes"; #compare les links
           end
           return table_data;
@@ -76,10 +76,10 @@ class ScrapFbPros
           code_col_name_hash = column_code_of_hash_keys
           session = GoogleDrive::Session.from_config("config.json")
           ws = session.spreadsheet_by_key( ENV["SPREADSHEET_SCRAPPING_FB_EVENTS"] ).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
-          for i in 1..table_data.length
-              table_data[i-1].each do |key, value|
+          for i in 0...table_data.length
+              table_data[i].each do |key, value|
                  y = code_col_name_hash[key]
-                 ws[i+1, y] = table_data[i-1][key]
+                 ws[i+2, y] = table_data[i][key]
               end
           end
           ws.save
