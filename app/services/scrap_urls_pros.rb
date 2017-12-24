@@ -76,7 +76,7 @@ class ScrapUrlsPros
 
         headless = Headless.new
         headless.start
-          browser = Watir::Browser.new (:firefox)
+          browser = Watir::Browser.new (:chrome)
           browser.goto(link)
             # sleep 2
           res = browser.body.text
@@ -92,7 +92,7 @@ class ScrapUrlsPros
 
         headless = Headless.new
         headless.start
-          browser = Watir::Browser.new(:firefox);
+          browser = Watir::Browser.new(:chrome);
           browser.goto(link);
           browser.element(:xpath => "/html/body/div[1]/div/div/main/article/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[1]/a").click;
           browser.element(:xpath => "//*[@id='ai1ec-view-agenda']").click;
