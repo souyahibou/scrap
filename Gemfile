@@ -20,7 +20,7 @@ gem 'fbgraph'			  #ajout  gem facebook
 
 gem 'rails_12factor', group: :production
 
-# gem 'json'                      #ajout
+gem 'json'                      #ajout
 # gem 'csv'                	       #ajout
 # gem 'gmail'                     #ajout
 

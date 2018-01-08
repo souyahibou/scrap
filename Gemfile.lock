@@ -353,6 +353,7 @@ DEPENDENCIES
   google_drive
   headless
   jbuilder (~> 2.5)
+  json
   listen (>= 3.0.5, < 3.2)
   nokogiri
   pg (~> 0.18)

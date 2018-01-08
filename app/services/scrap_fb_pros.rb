@@ -106,11 +106,11 @@ class ScrapFbPros
                     tabh[:event_end_time]    = event[:end_time]
                     tabh[:event_description] = event[:description]
 
-                    tabh[:event_owner_id] = event[:owner][:id]
-                    tabh[:event_owner_name] = event[:owner][:name]
-                    tabh[:event_picture_data_url] = event[:picture][:data][:url]
+                    # tabh[:event_owner_id] = event[:owner][:id]
+                    # tabh[:event_owner_name] = event[:owner][:name]
+                    # tabh[:event_picture_data_url] = event[:picture][:data][:url]
 
-                    tabh[:event_photos_images] = event[:photos][:images][0]
+                    # tabh[:event_photos_images] = event[:photos][:images][0]
 
                     if event[:place] != nil then
                        tabh[:event_place_id]   = event[:place][:id]

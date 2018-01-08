@@ -20,5 +20,3 @@
 
 # Ignore application configuration
 /config/application.yml
-/app/services/config.json
-/config.json
