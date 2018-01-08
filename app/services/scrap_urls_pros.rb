@@ -137,10 +137,13 @@ class ScrapUrlsPros #< Thor
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       def perform
          tab = [];
-         list_urls = get_all_professors_urls
+         list_urls  =   [ 'http://www.justdancewithlife.com/calendrier-calendar/','http://www.lesviesdansent.fr/crbst_16.html',
+                            'http://www.bodyvoiceandbeing.com/cours-et-ateliers',   'http://merlinlise.wixsite.com/dansenative/mercredi-danse-hebdomadaire-paris',
+                            'https://www.coeur-danse-presence.com/pour-tous',       'https://omar5rythmes.wordpress.com/calendrier/',
+                            'https://www.marcsilvestre.com/agenda-cours-stages-1',  'http://www.veroniquechampalou.com/paris-p228031.html'  ];
          tab = scrap_links_for_all_webpages(list_urls);
          comp_data_in_SpreadSheet(tab);
-         save_from_on_GoogleDrive(tab);
+         p tab;
          return tab;
       end
 
