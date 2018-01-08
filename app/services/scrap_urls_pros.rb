@@ -1,4 +1,4 @@
-class ScrapUrlsPros
+class ScrapUrlsPros #< Thor
       require 'open-uri'
 
       def scrap_links_for_all_webpages(tab_of_pages)                                              #scrap et enregistre les données(pages) de tous les sites dan sun array :1ere colonnes les sites,2e colonne les datas(pages)
@@ -18,6 +18,9 @@ class ScrapUrlsPros
 
          return tab_for_all_data;
       end
+
+
+
 
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       # #Interaction avec base de données//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,14 +99,13 @@ class ScrapUrlsPros
 
       def scrap_hard_links(link)                                                      #utilise une copy de la page via la gem watir au lieu de Nokogiri
 
-        headless = Headless.new
-        headless.start
-          browser = Watir::Browser.new (:chrome)
+
+          browser = new_browser
           browser.goto(link)
             # sleep 2
           res = browser.body.text
           browser.close;
-        headless.destroy
+
           return res;
       end
 
@@ -112,9 +114,7 @@ class ScrapUrlsPros
           copy_of_pages=[];
           fin = 13;
 
-        headless = Headless.new
-        headless.start
-          browser = Watir::Browser.new(:chrome);
+          browser = new_browser;
           browser.goto(link);
           browser.element(:xpath => "/html/body/div[1]/div/div/main/article/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[1]/a").click;
           browser.element(:xpath => "//*[@id='ai1ec-view-agenda']").click;
@@ -126,9 +126,11 @@ class ScrapUrlsPros
               sleep 2;
           end
           browser.close;
-        headless.destroy
           return  copy_page;   #la derniere page comprends les données des pages précédentes.(code pouvant etre simplifié)
       end
+
+
+
 
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       # #Exécution code principal////////////////////////////////////////////////#ouvre la dernière data save , reprend en arg les dateas scrapés et les compares.//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,4 +143,41 @@ class ScrapUrlsPros
          save_from_on_GoogleDrive(tab);
          return tab;
       end
+
+      private
+
+          # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+          # #Configuration nouveau navigateur////////////////////////////////////////////////.//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+          # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+          def new_browser
+              options = Selenium::WebDriver::Chrome::Options.new
+
+              # make a directory for chrome if it doesn't already exist
+              chrome_dir = File.join Dir.pwd, %w(tmp chrome)
+              FileUtils.mkdir_p chrome_dir
+              user_data_dir = "--user-data-dir=#{chrome_dir}"
+              # add the option for user-data-dir
+              options.add_argument user_data_dir
+
+              # let Selenium know where to look for chrome if we have a hint from
+              # heroku. chromedriver-helper & chrome seem to work out of the box on osx,
+              # but not on heroku.
+              if chrome_bin = ENV["GOOGLE_CHROME_BIN"]
+                 options.add_argument "no-sandbox"
+                 options.binary = chrome_bin
+                 # give a hint to here too
+                 Selenium::WebDriver::Chrome.driver_path = \
+                   "/app/vendor/bundle/bin/chromedriver"
+              end
+
+              # headless!
+              # keyboard entry wont work until chromedriver 2.31 is released
+              options.add_argument "window-size=1200x600"
+              options.add_argument "headless"
+              options.add_argument "disable-gpu"
+
+              # make the browser
+              Watir::Browser.new :chrome, options: options
+          end
+
 end
