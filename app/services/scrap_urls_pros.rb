@@ -116,7 +116,7 @@ class ScrapUrlsPros #< Thor
 
           browser = new_browser;
           browser.goto(link);
-          browser.element(:xpath => "/html/body/div[1]/div/div/main/article/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[1]/a").click;
+            browser.element(:xpath => "/html/body/div[1]/div/div/main/article/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[1]/a").click;
           browser.element(:xpath => "//*[@id='ai1ec-view-agenda']").click;
 
           while fin > 1 do
@@ -137,13 +137,10 @@ class ScrapUrlsPros #< Thor
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       def perform
          tab = [];
-         list_urls  =   [ 'http://www.justdancewithlife.com/calendrier-calendar/','http://www.lesviesdansent.fr/crbst_16.html',
-                            'http://www.bodyvoiceandbeing.com/cours-et-ateliers',   'http://merlinlise.wixsite.com/dansenative/mercredi-danse-hebdomadaire-paris',
-                            'https://www.coeur-danse-presence.com/pour-tous',       'https://omar5rythmes.wordpress.com/calendrier/',
-                            'https://www.marcsilvestre.com/agenda-cours-stages-1',  'http://www.veroniquechampalou.com/paris-p228031.html'  ];
+         list_urls = get_all_professors_urls
          tab = scrap_links_for_all_webpages(list_urls);
          comp_data_in_SpreadSheet(tab);
-         p tab;
+         save_from_on_GoogleDrive(tab);
          return tab;
       end
 

@@ -9,6 +9,8 @@ end
 # require 'rubygems'
 # require 'mechanize'
 
+gem "fileutils"                   #ajout 
+
 gem 'headless'                    #ajout
 gem 'phantomjs'                   #ajout
 gem "webdrivers", "~> 3.0"
