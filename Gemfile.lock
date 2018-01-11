@@ -109,6 +109,7 @@ GEM
     ffi (1.9.18)
     figaro (1.1.1)
       thor (~> 0.14)
+    fileutils (1.0.2)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     google-api-client (0.13.6)
@@ -350,6 +351,7 @@ DEPENDENCIES
   devise-i18n
   fbgraph
   figaro
+  fileutils
   google_drive
   headless
   jbuilder (~> 2.5)

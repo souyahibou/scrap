@@ -1,5 +1,5 @@
+require 'open-uri'
 class ScrapUrlsPros #< Thor
-      require 'open-uri'
 
       def scrap_links_for_all_webpages(tab_of_pages)                                              #scrap et enregistre les données(pages) de tous les sites dan sun array :1ere colonnes les sites,2e colonne les datas(pages)
          block_text = [];
@@ -13,7 +13,7 @@ class ScrapUrlsPros #< Thor
                block_text = (( block_text != "" )? block_text : (  methode = "Watir"; scrap_hard_links(page_pro) ) );   #attention à l'ordre des instruction
                tab_for_all_data << {:link => page_pro, :scrap => block_text, :methode => methode, :date => Time.now}
          end
-               block_text = scrap_justdancewithlife_link(tab_of_hard_pages[:justdance]).delete(" \t\r\n");
+               block_text = scrap_justdancewithlife_link(tab_of_hard_pages[:justdance]).join(' END AND BEGIN BETWEEN PAGES ').delete(" \t\r\n");
                tab_for_all_data << {:link => tab_of_hard_pages[:justdance], :scrap => block_text, :methode => "Unique with Watir", :date => Time.now}
 
          return tab_for_all_data;
@@ -77,7 +77,7 @@ class ScrapUrlsPros #< Thor
 
 
       def get_all_professors_urls
-        session = GoogleDrive::Session.from_service_account_key(key_to_json_file)
+        session = GoogleDrive::Session.from_config("config.json")
         ws = session.spreadsheet_by_key(ENV["SPEADSHEET_LIENS_ET_IDS"]).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
         tab_of_urls = []
           for i in 0...(ws.rows.count)    #1 i en-tête
@@ -112,24 +112,21 @@ class ScrapUrlsPros #< Thor
 
       def scrap_justdancewithlife_link(link)                                          #scrap particulier
           copy_of_pages=[];
-          fin = 13;
 
           browser = new_browser;
           browser.goto(link);
-            browser.element(:xpath => "/html/body/div[1]/div/div/main/article/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[1]/a").click;
-          browser.element(:xpath => "//*[@id='ai1ec-view-agenda']").click;
-
-          while fin > 1 do
+          browser.element(:xpath => "/html/body/div[1]/div/div/main/article/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[1]/a").click;  #ouvre le dropdown choix du format(Agenda/Month)
+          browser.element(:xpath => "//*[@id='ai1ec-view-agenda']").click;     #Selection de "Agenda"
+          5.times do
+              p browser.element(:xpath => "/html/body/div[1]/div/div/main/article/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[2]/div").text #mois selected
               copy_page = browser.body.text
-              ( copy_of_pages[-1] != copy_page )? ( copy_of_pages << copy_page ; fin -= 1 ) : fin = 1 ;
-              browser.element(:xpath => "/html/body/div[1]/div/div/main/article/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[2]/div[1]/a[3]").click;
-              sleep 2;
+              copy_of_pages << copy_page.length
+              browser.element(:xpath => "/html/body/div[1]/div/div/main/article/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div/div[2]/div[2]/div[1]/div[2]/div[1]/a[3]").fire_event('click')   #pour aller page suivante en format agenda
+              sleep 3;
           end
           browser.close;
-          return  copy_page;   #la derniere page comprends les données des pages précédentes.(code pouvant etre simplifié)
+          return  copy_of_pages;   #la derniere page comprends les données des pages précédentes.(code pouvant etre simplifié) a revérifier
       end
-
-
 
 
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,39 +142,40 @@ class ScrapUrlsPros #< Thor
       end
 
       private
-
           # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           # #Configuration nouveau navigateur////////////////////////////////////////////////.//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           def new_browser
-              options = Selenium::WebDriver::Chrome::Options.new
+              if ENV["LOCAL_OR_HEROKU"] then
+                  Watir::Browser.new :firefox
+              else
+                  options = Selenium::WebDriver::Chrome::Options.new
+                  # make a directory for chrome if it doesn't already exist
+                  chrome_dir = File.join Dir.pwd, %w(tmp chrome)
+                  FileUtils.mkdir_p chrome_dir
+                  user_data_dir = "--user-data-dir=#{chrome_dir}"
+                  # add the option for user-data-dir
+                  options.add_argument user_data_dir
 
-              # make a directory for chrome if it doesn't already exist
-              chrome_dir = File.join Dir.pwd, %w(tmp chrome)
-              FileUtils.mkdir_p chrome_dir
-              user_data_dir = "--user-data-dir=#{chrome_dir}"
-              # add the option for user-data-dir
-              options.add_argument user_data_dir
+                  # let Selenium know where to look for chrome if we have a hint from
+                  # heroku. chromedriver-helper & chrome seem to work out of the box on osx,
+                  # but not on heroku.
+                  if chrome_bin = ENV["GOOGLE_CHROME_BIN"]
+                     options.add_argument "no-sandbox"
+                     options.binary = chrome_bin
+                     # give a hint to here too
+                     Selenium::WebDriver::Chrome.driver_path = \
+                       "/app/vendor/bundle/bin/chromedriver"
+                  end
 
-              # let Selenium know where to look for chrome if we have a hint from
-              # heroku. chromedriver-helper & chrome seem to work out of the box on osx,
-              # but not on heroku.
-              if chrome_bin = ENV["GOOGLE_CHROME_BIN"]
-                 options.add_argument "no-sandbox"
-                 options.binary = chrome_bin
-                 # give a hint to here too
-                 Selenium::WebDriver::Chrome.driver_path = \
-                   "/app/vendor/bundle/bin/chromedriver"
+                  # headless!
+                  # keyboard entry wont work until chromedriver 2.31 is released
+                  options.add_argument "window-size=1200x600"
+                  options.add_argument "headless"
+                  options.add_argument "disable-gpu"
+
+                  # make the browser
+                  Watir::Browser.new :chrome, options: options
               end
-
-              # headless!
-              # keyboard entry wont work until chromedriver 2.31 is released
-              options.add_argument "window-size=1200x600"
-              options.add_argument "headless"
-              options.add_argument "disable-gpu"
-
-              # make the browser
-              Watir::Browser.new :chrome, options: options
           end
-
 end
