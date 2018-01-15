@@ -9,7 +9,7 @@ end
 # require 'rubygems'
 # require 'mechanize'
 
-gem "fileutils"                   #ajout 
+# gem "fileutils"                   #ajout 
 
 gem 'headless'                    #ajout
 gem 'phantomjs'                   #ajout
