@@ -4,12 +4,14 @@ git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
   "https://github.com/#{repo_name}.git"
 end
-
+gem 'differ'                       #ajout
+# gem 'diff_match_patch_native'     #ajout
+# gem 'rice'
 # require 'open-uri'
 # require 'rubygems'
 # require 'mechanize'
 
-# gem "fileutils"                   #ajout 
+# gem "fileutils"                 #ajout
 
 gem 'headless'                    #ajout
 gem 'phantomjs'                   #ajout
