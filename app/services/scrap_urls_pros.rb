@@ -196,7 +196,7 @@ class ScrapUrlsPros #< Thor
                               "https://spreadsheets.google.com/feeds/"
                              ],
                     "refresh_token": ENV["GOOGLE_refresh_token"],
-                    "redirect_uri": "http://localhost:3000/")
+                    "redirect_uri": ENV["GOOGLE_redirect_uri"])
               auth_url = credentials.authorization_uri
                                                                               if false
                                                                                   if ENV['VERY_FIRST_TIME'] && !ENV['VERY_FIRST_TIME'].empty? then    #si la clé existe et est vide
