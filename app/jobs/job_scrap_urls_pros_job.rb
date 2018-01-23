@@ -2,7 +2,7 @@ class JobScrapUrlsProsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    JobScrapUrlsProsJob.set(wait: 1.day).perform_later
+    JobScrapUrlsProsJob.set(wait_until: (Date.tomorrow + 7.hours)).perform_later
     ScrapUrlsPros.new.perform
   end
 end

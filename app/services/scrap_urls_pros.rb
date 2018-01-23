@@ -1,10 +1,30 @@
+require "googleauth"
+
 
 class ScrapUrlsPros #< Thor
 
+      attr_accessor :spreadsheet_fb_events_key, :spreadsheet_urls_key,  :spreadsheet_liens_et_ids_key, :get_code_col_name_hash
+
+      def google_drive_session
+        connexion_to_GoogleDrive
+      end
+
+      def browser_session
+        new_browser
+      end
+
+      def initialize
+        @spreadsheet_fb_events_key = ENV["SPREADSHEET_SCRAPPING_FB_EVENTS"]
+        @spreadsheet_urls_key = ENV["SPEADSHEET_SCRAPPING_URLS"]
+        @spreadsheet_liens_et_ids_key = ENV["SPEADSHEET_LIENS_ET_IDS"]
+        @get_code_col_name_hash = column_code_of_hash_keys
+
+      end
+
       def scrap_links_for_all_webpages(tab_of_pages)                                              #scrap et enregistre les données(pages) de tous les sites dan sun array :1ere colonnes les sites,2e colonne les datas(pages)
          block_text       = [];
-         hash_bilobaba    = {:old_scrap => "Données de Page",  :old_methode => "Gemme",  :old_date => "Date"}
-         hash_sites       = {:last_scrap => "Données de Page", :last_methode => "Gemme", :last_date => "Date"}
+         hash_bilobaba    = {:old_scrap => "Données de Page Bilobaba",  :old_methode => "Gemme Bilobaba",  :old_date => "Date Bilobaba"}
+         hash_sites       = {:last_scrap => "Données de Page sites", :last_methode => "Gemme sites", :last_date => "Date sites"}
          hash_head        = {:link => "Site Professeur"}.merge(hash_bilobaba).merge(hash_sites).merge({ :change => "Etat", :last_modif => "Dernière modif"})
          tab_for_all_data = [hash_head];
          tab_of_hard_pages = {:justdance => 'http://www.justdancewithlife.com/calendrier-calendar/'}
@@ -23,21 +43,6 @@ class ScrapUrlsPros #< Thor
       end
 
 
-      def column_code_of_hash_keys
-          code_col_name_hash                              ={}
-          code_col_name_hash[:link]                       =1
-          code_col_name_hash[:old_scrap]                  =2
-          code_col_name_hash[:old_methode]                =3
-          code_col_name_hash[:old_date]                   =4
-          code_col_name_hash[:last_scrap]                 =5
-          code_col_name_hash[:last_methode]               =6
-          code_col_name_hash[:last_date]                  =7
-          code_col_name_hash[:change]                     =8
-          code_col_name_hash[:last_modif]                 =9
-
-          return code_col_name_hash
-      end
-
 
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       # #Interaction avec base de données//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,17 +50,17 @@ class ScrapUrlsPros #< Thor
 
       #sauvegarde dans google drive
       def save_from_on_GoogleDrive(table_data)
-          code_col_name_hash = column_code_of_hash_keys
-          session = GoogleDrive::Session.from_config("config.json")
-          ws = session.spreadsheet_by_key(ENV["SPEADSHEET_SCRAPPING_URLS"]).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
+          session = connexion_to_GoogleDrive
+          ws = session.spreadsheet_by_key(@spreadsheet_urls_key).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
+
           for i in 0...table_data.length
              if  table_data[i][:change] ==  "Yes" || table_data[i][:change] == "Etat"
                  table_data[i].each do |key, value|
-                     y = code_col_name_hash[key]
+                     y = get_code_col_name_hash[key]
                      ws[i+1,y] = table_data[i][key]
                  end
               else
-                y = code_col_name_hash[:change]
+                y = get_code_col_name_hash[:change]
                 ws[i+1,y] = table_data[i][:change]
              end
           end
@@ -66,43 +71,20 @@ class ScrapUrlsPros #< Thor
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       def comp_data_in_SpreadSheet(table_data)                                           #compare la table de données avec la table de données déja existante (enregistrée au format CSV)
-          y = column_code_of_hash_keys[:old_scrap]                                    #diff between ws.rows[i][y] and ws[i,y]
-          session = GoogleDrive::Session.from_config("config.json")
-          ws = session.spreadsheet_by_key(ENV["SPEADSHEET_SCRAPPING_URLS"]).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
+          y = get_code_col_name_hash[:old_scrap]                                    #diff between ws.rows[i][y] and ws[i,y]
+          session = connexion_to_GoogleDrive
+          ws = session.spreadsheet_by_key(@spreadsheet_urls_key).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
           for i in 2..table_data.length
                   table_data[i-1][:change] = ((ws[i, y] <=> table_data[i-1][:last_scrap])==0)? "No change" : (table_data[i-1][:last_modif] = Differ.diff(ws[i, y],table_data[i-1][:last_scrap],'|').to_s.scan(/{.[^{}]*}/)  ;"Yes"); #compare les datas de pages
-
           end
           return table_data;
       end
 
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      def key_to_json_file
-          tempHash = {
-            "type": ENV["type"],
-            "project_id":  ENV["project_id"],
-            "private_key_id":  ENV["private_key_id"],
-            "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC1f6/GQYNrh2ab\n79exTLan/8zBU1LQ9Rhpw8co7ybaS8G472p9Kl8HH7G1yxraSs9OjRDBrHBJagr/\nnhPuHgxtqe9AXARj8MVrKU9pSRaMU9Li7J8FlENQzN5RY138Ew1pVFxmmRuV2lcT\npFESQ+iwA+4FEPcsgXTJzo0Bgvvoxmg5MYMPSTPZLAnWVfPj2uLNJzQ5C8YVr1Hk\nfoquKSNcvwIzN9ljnBY2tb14nyP9NMR73a39BgTgdAMjzD0pwhtTKl+vjsIpvQGB\nNn9nSYvd9f4e5l7Y728n+WXoHfqAPocoLfO8NrFAoftqAGP8Ixk0D22XzzLQ/F4+\nDDPH7XIpAgMBAAECggEAHrAVP1dKaj79mXYnKSJIbAVzUGjPQud+Fjv1C7XMAvL2\nMVfB0KH+aUzxlkReKPSnMqflYmnOnosgivHmesd34H7wJhio4WEPcDwO4kVqW5W8\nvYO2q5HTA/Fv0aEUfg+Wn+2UpgBTSrYdLQQGdSkoScKQVyj0MgE9hvW2n7/O6h+B\nCGH6NQdDw9vyR2tXaQdKNwI62/0oTJ5DZAD340A2l3p8VqJsmRn+Lw/7I6/3hlYG\nhux9WtAMOVl7pvsRPO94spjLe+Rdo0v9lKJHWBJOBnt3jtRCJ1IZk49oaqOtHFrp\n8Fp/TVRssWNaMu5LIon1H1drnWgFly5KT3AKNOuoJQKBgQDeSeA8aWbHySQZAAck\nLKCMrq2R03AxjI6gJhPk7W/IFjrrFi+g/A496+biukZX6ZDDjUrF3DiKk82ZZJbw\ne5NIYCelg8qpeykjJxUjjbMnCJQHAfbc2hvkSKETqRDotzZ8/PbAigCmVmmTKAj9\nMjLl1hzf8hiLxC7sTyMQyCLBWwKBgQDRBjBXU/OjaeI7723df9ucLq7R0k4cSrEE\nHx2mI/h0Elk3UM9/gI+AboVWWaPgMS0ZAYpr8dNkIoSFgWpKt3Qp1irO8otYGzzd\n8eUD6dBJamf+f7/qtMbQuC+7A/m9BWXgL2kEZO16EN61mUKBryMagG1YPPOY6BJ2\n3EJAbs2NywKBgB41F93dzPPVZ6xmDpJh5id4DWpFu3dgTHmC8y0m/wvHyZXs2+ga\nmKzdg/DHs4t62AtbBhBBTwW19DimLMTdZjRtrLWXZVEGxZ5bT0oXlYL2bXdOUwfM\nNAIfxJPxY7TcQPFXRwj/N/tivtIanK4bxkLph97+/UrxDBdc4b0EFYUFAoGBALp3\nKui8m7xL2OZe0UOnq+HIQ2wqkEPs3b0vhOORczMYqz4NeQ3lQh7weUJu9SIqvHBy\nT2m8cTgDEvWGXawJvDcWN1omROh0Y/gaspKrIoRbyCnhDPP0EOhhZzMOeNuG1TsJ\nEEY7Qx6BriuSbSIDeu1JZEIzHZxqaw5drzyLnBPBAoGBAJab8nIRU06Oqks4VdEl\nfn1GjxoZeXbPAWy8+127ssvY7uc0tLg25N4XwXyNzHtxGOd1iUbqdaTofRb5guJO\na+wD+wuK3mzrGqZ9dIx8tY1vezGNMFBeYSiO/rrrh5Gw0IvpdIlul61HgZasOioK\ntwjxmlc4z/c4odysuTa1QUeC\n-----END PRIVATE KEY-----\n",
-            "client_email":  ENV["client_email"],
-            "client_id":  ENV["client_id"],
-            "auth_uri": ENV["auth_uri"],
-            "token_uri": ENV["token_uri"],
-            "auth_provider_x509_cert_url": ENV["auth_provider_x509_cert_url"],
-            "client_x509_cert_url": ENV["client_x509_cert_url"]
-          }
-
-          File.open("new.json","w") do |f|
-            f.write(tempHash.to_json)
-            # f.write(JSON.pretty_generate(tempHash))
-          end
-          return "new.json"
-      end
-
-
       def get_all_professors_urls
-        session = GoogleDrive::Session.from_config("config.json")
-        ws = session.spreadsheet_by_key(ENV["SPEADSHEET_LIENS_ET_IDS"]).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
+        session = connexion_to_GoogleDrive
+        ws = session.spreadsheet_by_key(@spreadsheet_liens_et_ids_key).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
         tab_of_urls = []
           for i in 0...(ws.rows.count)    #1 i en-tête
               tab_of_urls << ws.rows[i][0]
@@ -201,5 +183,47 @@ class ScrapUrlsPros #< Thor
                   # make the browser
                   Watir::Browser.new :chrome, options: options
               end
+          end
+
+
+          # ouverture nouvelle session
+          def connexion_to_GoogleDrive
+              credentials = Google::Auth::UserRefreshCredentials.new(
+                    "client_id": ENV["GOOGLE_client_id"],
+                    "client_secret": ENV["GOOGLE_client_secret"],
+                    "scope": [
+                              "https://www.googleapis.com/auth/drive",
+                              "https://spreadsheets.google.com/feeds/"
+                             ],
+                    "refresh_token": ENV["GOOGLE_refresh_token"],
+                    "redirect_uri": "http://localhost:3000/")
+              auth_url = credentials.authorization_uri
+                                                                              if false
+                                                                                  if ENV['VERY_FIRST_TIME'] && !ENV['VERY_FIRST_TIME'].empty? then    #si la clé existe et est vide
+                                                                                      credentials.code = authorization_code
+                                                                                      ENV['VERY_FIRST_TIME'] = ""
+                                                                                  else
+                                                                                      credentials.refresh_token = refresh_token
+                                                                                  end
+                                                                              end
+              credentials.fetch_access_token!
+              session = GoogleDrive::Session.from_credentials(credentials)
+              session
+              # session = GoogleDrive::Session.from_config("config.json")
+          end
+
+          def column_code_of_hash_keys
+              code_col_name_hash                              ={}
+              code_col_name_hash[:link]                       =1
+              code_col_name_hash[:old_scrap]                  =2
+              code_col_name_hash[:old_methode]                =3
+              code_col_name_hash[:old_date]                   =4
+              code_col_name_hash[:last_scrap]                 =5
+              code_col_name_hash[:last_methode]               =6
+              code_col_name_hash[:last_date]                  =7
+              code_col_name_hash[:change]                     =8
+              code_col_name_hash[:last_modif]                 =9
+
+              return code_col_name_hash
           end
 end

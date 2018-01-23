@@ -5,6 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 gem 'differ'                       #ajout
+
 # gem 'diff_match_patch_native'     #ajout
 # gem 'rice'
 # require 'open-uri'
