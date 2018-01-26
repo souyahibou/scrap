@@ -6,39 +6,31 @@ git_source(:github) do |repo_name|
 end
 gem 'differ'                       #ajout
 
-# gem 'diff_match_patch_native'     #ajout
-# gem 'rice'
-# require 'open-uri'
-# require 'rubygems'
-# require 'mechanize'
-
-# gem "fileutils"                 #ajout
-
 gem 'headless'                    #ajout
 gem 'phantomjs'                   #ajout
 gem "webdrivers", "~> 3.0"
 gem "chromedriver-helper"
 gem "thor"
 
-gem "figaro"			  #ajout
-gem 'fbgraph'			  #ajout  gem facebook
+gem "figaro"			                #ajout
+gem 'fbgraph'			                #ajout  gem facebook
 
 gem 'rails_12factor', group: :production
 
-gem 'json'                      #ajout
-# gem 'csv'                	       #ajout
+gem 'json'                        #ajout
+# gem 'csv'                	      #ajout
 # gem 'gmail'                     #ajout
 
 gem "google_drive"                #ajout
 gem 'watir'                       #ajout
-gem 'pry'                	  #ajout
+gem 'pry'                	        #ajout
 gem 'nokogiri'
 
-gem 'twitter'				#ajout
-gem 'delayed_job_active_record'   	#ajout
-gem 'devise-i18n'                 	#ajout
-gem 'rspec-rails', '~> 3.5.0'		#ajout
-gem 'devise' 				#ajout
+gem 'twitter'				              #ajout
+gem 'delayed_job_active_record'   #ajout
+gem 'devise-i18n'                 #ajout
+gem 'rspec-rails', '~> 3.5.0'		  #ajout
+gem 'devise' 				              #ajout
 gem 'bootstrap-sass', '3.3.7'		#ajout
 
 
