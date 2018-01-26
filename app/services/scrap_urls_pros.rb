@@ -3,23 +3,49 @@ require "googleauth"
 
 class ScrapUrlsPros #< Thor
 
+      # public
+      #   scrap_links_for_all_webpages
+      #   scrap_soft_link(link)
+      #   scrap_justdancewithlife_link(link)
+      #
+      #   get_all_professors_urls
+      #   comp_data_in_SpreadSheet(table_data)
+      #   save_from_on_GoogleDrive(table_data)
+      #
+      # private
+      #   new_browser
+      #   connexion_to_GoogleDrive(type_connex)
+      #   column_code_of_hash_keys
+
       attr_accessor :spreadsheet_fb_events_key, :spreadsheet_urls_key,  :spreadsheet_liens_et_ids_key, :get_code_col_name_hash
 
-      def google_drive_session
-        connexion_to_GoogleDrive
+      def set_google_drive_session
+          connexion_to_GoogleDrive
       end
 
-      def browser_session
-        new_browser
+
+      def set_browser_session
+          new_browser
       end
+
+
+      def set_first_connexion     #activate_first_connexion_GoogleDrive
+          connexion_to_GoogleDrive("first")
+      end
+
+
+      def set_refresh_connexion     #activate_first_connexion_GoogleDrive
+          connexion_to_GoogleDrive("refresh")
+      end
+
 
       def initialize
-        @spreadsheet_fb_events_key = ENV["SPREADSHEET_SCRAPPING_FB_EVENTS"]
-        @spreadsheet_urls_key = ENV["SPEADSHEET_SCRAPPING_URLS"]
-        @spreadsheet_liens_et_ids_key = ENV["SPEADSHEET_LIENS_ET_IDS"]
-        @get_code_col_name_hash = column_code_of_hash_keys
-
+          @spreadsheet_fb_events_key = ENV["SPREADSHEET_SCRAPPING_FB_EVENTS"]
+          @spreadsheet_urls_key = ENV["SPEADSHEET_SCRAPPING_URLS"]
+          @spreadsheet_liens_et_ids_key = ENV["SPEADSHEET_LIENS_ET_IDS"]
+          @get_code_col_name_hash = column_code_of_hash_keys
       end
+
 
       def scrap_links_for_all_webpages(tab_of_pages)                                              #scrap et enregistre les données(pages) de tous les sites dan sun array :1ere colonnes les sites,2e colonne les datas(pages)
          block_text       = [];
@@ -41,7 +67,6 @@ class ScrapUrlsPros #< Thor
 
          return tab_for_all_data;
       end
-
 
 
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,7 +212,8 @@ class ScrapUrlsPros #< Thor
 
 
           # ouverture nouvelle session
-          def connexion_to_GoogleDrive
+          def connexion_to_GoogleDrive type_connex = nil
+              type_connex ||= "none"
               credentials = Google::Auth::UserRefreshCredentials.new(
                     "client_id": ENV["GOOGLE_client_id"],
                     "client_secret": ENV["GOOGLE_client_secret"],
@@ -198,14 +224,14 @@ class ScrapUrlsPros #< Thor
                     "refresh_token": ENV["GOOGLE_refresh_token"],
                     "redirect_uri": ENV["GOOGLE_redirect_uri"])
               auth_url = credentials.authorization_uri
-                                                                              if false
-                                                                                  if ENV['VERY_FIRST_TIME'] && !ENV['VERY_FIRST_TIME'].empty? then    #si la clé existe et est vide
-                                                                                      credentials.code = authorization_code
-                                                                                      ENV['VERY_FIRST_TIME'] = ""
-                                                                                  else
-                                                                                      credentials.refresh_token = refresh_token
-                                                                                  end
-                                                                              end
+
+              case type_connex
+                   when "first"     then  credentials.code = authorization_code  #si la clé existe et est vide
+                   when "refresh"   then  credentials.refresh_token = refresh_token
+                   when "none"      then  ""
+                   else                   ""
+              end
+
               credentials.fetch_access_token!
               session = GoogleDrive::Session.from_credentials(credentials)
               session
