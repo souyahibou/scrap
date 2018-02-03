@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe ScrappingsController, type: :controller do
 
-  describe "GET #search2" do
+  describe "GET #response_code" do
     it "returns http success" do
-      get :search2
+      get :response_code
       expect(response).to have_http_status(:success)
     end
   end

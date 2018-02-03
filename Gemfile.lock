@@ -354,6 +354,8 @@ DEPENDENCIES
   figaro
   google_drive
   headless
+  http
+  httpclient
   jbuilder (~> 2.5)
   json
   listen (>= 3.0.5, < 3.2)

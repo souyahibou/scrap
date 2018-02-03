@@ -46,7 +46,6 @@ class ScrapUrlsPros #< Thor
           @get_code_col_name_hash = column_code_of_hash_keys
       end
 
-
       def scrap_links_for_all_webpages(tab_of_pages)                                              #scrap et enregistre les données(pages) de tous les sites dan sun array :1ere colonnes les sites,2e colonne les datas(pages)
          block_text       = [];
          hash_bilobaba    = {:old_scrap => "Données de Page Bilobaba",  :old_methode => "Gemme Bilobaba",  :old_date => "Date Bilobaba"}
@@ -67,6 +66,7 @@ class ScrapUrlsPros #< Thor
 
          return tab_for_all_data;
       end
+
 
 
       # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

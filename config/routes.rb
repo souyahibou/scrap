@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  get 'scrappings/request_code'
+
+  get 'scrappings/response_code'
+
+  get 'scrappings/connect'
+
   get  'scrappings/search2'
 
   get  'scrappings/search'

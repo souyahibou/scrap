@@ -4,7 +4,9 @@ git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
   "https://github.com/#{repo_name}.git"
 end
-gem 'differ'                       #ajout
+gem 'differ'                      #ajout
+# gem 'httpclient'                  #ajout
+# gem 'http'                        #ajout
 
 gem 'headless'                    #ajout
 gem 'phantomjs'                   #ajout
@@ -31,7 +33,7 @@ gem 'delayed_job_active_record'   #ajout
 gem 'devise-i18n'                 #ajout
 gem 'rspec-rails', '~> 3.5.0'		  #ajout
 gem 'devise' 				              #ajout
-gem 'bootstrap-sass', '3.3.7'		#ajout
+gem 'bootstrap-sass', '3.3.7'		  #ajout
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

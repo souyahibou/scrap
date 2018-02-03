@@ -1,8 +1,19 @@
 <h1>Scrapping#home</h1>
 <p>Find me in app/views/scrapping/home.html.erb</p>
 
-<input type="submit" > <%= link_to "ScrapUrlsPros.new.perform", scrappings_search2_path %>
-</input>
 
-<input type="submit" > <%= link_to "ScrapFbPros.new.perform", scrappings_search_path %>
-</input>
+<div class="A" style="display:flex; flex_direction:row;">
+
+  <input type="submit" > <%= link_to "ScrapUrlsPros.new.perform", scrappings_search2_path %>
+  </input>
+
+  <input type="submit" > <%= link_to "ScrapFbPros.new.perform", scrappings_search_path %>
+  </input>
+
+  <input type="submit" > <%= link_to "connect to fb via JS", scrappings_connect_path %>
+  </input>
+
+  <input type="submit" > <%= link_to "connect to fb via FBGraph", scrappings_request_code_path %>
+  </input>
+
+</div>

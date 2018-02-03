@@ -21,3 +21,9 @@ end
 task :test => :environment do
   p "hello world !!!"
 end
+
+task :first_connexion => :environment do
+  p "Service for pro websites"
+  ScrapUrlsPros.new.set_first_connexion
+  p "Success"
+end
