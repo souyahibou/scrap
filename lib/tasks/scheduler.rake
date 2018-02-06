@@ -6,24 +6,27 @@ task :job => :environment do
   puts "done."
 end
 
-task :the_service_for_url => :environment do
-  p "Service for pro websites"
-  ScrapUrlsPros.new.perform
-  p "Success"
-end
-
-task :the_service_for_ids => :environment do
-  p "Service for facebook pro ids"
-  ScrapUrlsPros.new.perform
-  p "Success"
-end
 
 task :test => :environment do
   p "hello world !!!"
 end
 
+task :service_for_url => :environment do
+  p "Service for pro websites"
+  ScrapUrlsPros.new.perform
+  p "Success"
+end
+
+task :service_for_ids => :environment do
+  p "Service for facebook pro ids"
+  ScrapFbPros.new.perform
+  p "Success"
+end
+
+
 task :first_connexion => :environment do
   p "Service for pro websites"
   ScrapUrlsPros.new.set_first_connexion
+  ScrapFbPros.new.get_access_token
   p "Success"
 end
