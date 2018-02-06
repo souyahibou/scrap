@@ -1,0 +1,13 @@
+current directory: /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+/home/syb8/.rbenv/versions/2.4.2/bin/ruby -r ./siteconf20180206-31662-vjfjuo.rb extconf.rb
+creating Makefile
+
+current directory: /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+make "DESTDIR=" clean
+
+current directory: /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+make "DESTDIR="
+make: rien à faire pour « all ».
+
+current directory: /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+make "DESTDIR=" install

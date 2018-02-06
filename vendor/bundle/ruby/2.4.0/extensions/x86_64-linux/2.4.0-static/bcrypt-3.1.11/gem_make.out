@@ -1,0 +1,19 @@
+current directory: /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/vendor/bundle/ruby/2.4.0/gems/bcrypt-3.1.11/ext/mri
+/home/syb8/.rbenv/versions/2.4.2/bin/ruby -r ./siteconf20180206-31662-1fxoqpe.rb extconf.rb
+creating Makefile
+
+current directory: /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/vendor/bundle/ruby/2.4.0/gems/bcrypt-3.1.11/ext/mri
+make "DESTDIR=" clean
+
+current directory: /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/vendor/bundle/ruby/2.4.0/gems/bcrypt-3.1.11/ext/mri
+make "DESTDIR="
+compiling bcrypt_ext.c
+compiling crypt.c
+compiling crypt_blowfish.c
+compiling crypt_gensalt.c
+compiling wrapper.c
+linking shared-object bcrypt_ext.so
+
+current directory: /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/vendor/bundle/ruby/2.4.0/gems/bcrypt-3.1.11/ext/mri
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 bcrypt_ext.so ./.gem.20180206-31662-k4g258
