@@ -1,5 +1,7 @@
+require 'pry'
+require 'scrap_urls_pros'  #load 'filename.rb' #every call require/require_relative 'filename' #only once call
+
 class ScrapFbPros
-      require 'pry'
       # require 'open-uri'
       # require 'phantomjs'
       # save_from_on_GoogleDrive(tab);
@@ -59,7 +61,6 @@ class ScrapFbPros
       end
 
 
-
       def comp_data_in_SpreadSheet(table_data)                                           #compare la table de données avec la table de données déja existante (enregistrée au format CSV)
           session = GoogleDrive::Session.from_config("config.json")
           ws = session.spreadsheet_by_key( ENV["SPREADSHEET_SCRAPPING_FB_EVENTS"] ).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
@@ -72,7 +73,6 @@ class ScrapFbPros
 
 
       def save_from_on_GoogleDrive(table_data)
-
           code_col_name_hash = column_code_of_hash_keys
           session = GoogleDrive::Session.from_config("config.json")
           ws = session.spreadsheet_by_key( ENV["SPREADSHEET_SCRAPPING_FB_EVENTS"] ).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
@@ -87,6 +87,33 @@ class ScrapFbPros
       end
 
 
+      def get_access_token
+          @client = FBGraph::Client.new(:client_id => ENV["FIRST_APP_ID"],:secret_id => Figaro.env.secret_id)
+            browser = ScrapUrlsPros.new.set_browser_session
+            url_of_code = @client.authorization.authorize_url(:redirect_uri => ENV["FACEBOOK_redirect_uri"], :scope => ENV["FACEBOOK_scopes_auths2"]);
+            browser.goto(url_of_code);
+            browser.text_field(:id, 'email').set ENV["FACEBOOK_EMAIL"];
+            browser.text_field(:id, 'pass').set ENV["FACEBOOK_MDP"];
+            browser.button(:id => "loginbutton").click;
+            # if button1.exist? then button1.click
+            # if button2.exist? then button2.click
+            (browser.url.length < 50)? browser.refresh : code = browser.url;
+            code = browser.url;
+            code = code[code.index("=")+1..-1]
+            begin
+              @access_token ||= @client.authorization.process_callback(code, :redirect_uri =>  ENV["FACEBOOK_redirect_uri"])
+            rescue => monerreur
+              @access_token ||= monerreur.message.scan(/"([^"]*)"/)[1][0];
+              @token_type   ||= monerreur.message.scan(/"([^"]*)"/)[3][0]
+              @expires_in   ||= monerreur.message.scan(/[0-9]{3,12}/)
+            end
+
+            browser.close
+
+            @client.set_token(@access_token)
+            @client.selection.me.info!
+            ENV["token"] = @access_token.to_s;
+      end
 
 
       def scrap_events_facebook_groups(group)
@@ -154,10 +181,11 @@ class ScrapFbPros
       end
 
 
-# ScrapFbPros.new.get_all_facebook_groups
+      # ScrapFbPros.new.get_all_facebook_groups
 
       def perform
-          tab = [];                                                               #all events
+          tab = [];
+          get_access_token                                                             #all events
           groups = get_all_facebook_groups                                        #get all group ids
           groups.each do |group|
               tab += scrap_events_facebook_groups(group)                          #scrap events
@@ -166,4 +194,6 @@ class ScrapFbPros
           save_from_on_GoogleDrive(tab)                                           #save in speadsheet
           return tab
       end
+
+
 end
