@@ -44,14 +44,15 @@ class ScrapUrlsPros #< Thor
           @spreadsheet_urls_key = ENV["SPEADSHEET_SCRAPPING_URLS"]
           @spreadsheet_liens_et_ids_key = ENV["SPEADSHEET_LIENS_ET_IDS"]
           @get_code_col_name_hash = column_code_of_hash_keys
+          hash_bilobaba    = {:old_scrap => "Données de Page Bilobaba",  :old_methode => "Gemme Bilobaba",  :old_date => "Date Bilobaba"}
+          hash_sites       = {:last_scrap => "Données de Page sites", :last_methode => "Gemme sites", :last_date => "Date sites"}
+          @hash_head        = {:link => "Site Professeur"}.merge(hash_bilobaba).merge(hash_sites).merge({ :change => "Etat", :last_modif => "Dernière modif"})
+
       end
 
       def scrap_links_for_all_webpages(tab_of_pages)                                              #scrap et enregistre les données(pages) de tous les sites dan sun array :1ere colonnes les sites,2e colonne les datas(pages)
          block_text       = [];
-         hash_bilobaba    = {:old_scrap => "Données de Page Bilobaba",  :old_methode => "Gemme Bilobaba",  :old_date => "Date Bilobaba"}
-         hash_sites       = {:last_scrap => "Données de Page sites", :last_methode => "Gemme sites", :last_date => "Date sites"}
-         hash_head        = {:link => "Site Professeur"}.merge(hash_bilobaba).merge(hash_sites).merge({ :change => "Etat", :last_modif => "Dernière modif"})
-         tab_for_all_data = [hash_head];
+         tab_for_all_data = [@hash_head];
          tab_of_hard_pages = {:justdance => 'http://www.justdancewithlife.com/calendrier-calendar/'}
 
          tab_of_pages.each do |page_pro|
@@ -77,16 +78,13 @@ class ScrapUrlsPros #< Thor
       def save_from_on_GoogleDrive(table_data)
           session = connexion_to_GoogleDrive
           ws = session.spreadsheet_by_key(@spreadsheet_urls_key).worksheets[0]   #cle a changer en fonction du lien url du fichier google drive
+          y = get_code_col_name_hash
 
           for i in 0...table_data.length
              if  table_data[i][:change] ==  "Yes" || table_data[i][:change] == "Etat"
-                 table_data[i].each do |key, value|
-                     y = get_code_col_name_hash[key]
-                     ws[i+1,y] = table_data[i][key]
-                 end
+                 table_data[i].each { |key, value|  ws[i+1,y[key]] = table_data[i][key] }
               else
-                y = get_code_col_name_hash[:change]
-                ws[i+1,y] = table_data[i][:change]
+                  ws[i+1,y[:change]] = table_data[i][:change]                     #la ligne 1 correspond aux données d'en-tête de colonnes
              end
           end
           ws.save

@@ -4,6 +4,8 @@ git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
   "https://github.com/#{repo_name}.git"
 end
+gem 'curb'
+
 gem 'differ'                      #ajout
 # gem 'httpclient'                  #ajout
 # gem 'http'                        #ajout
@@ -16,6 +18,10 @@ gem "thor"
 
 gem "figaro"			                #ajout
 gem 'fbgraph'			                #ajout  gem facebook
+
+gem "koala"			  #ajout  gem facebook
+gem 'fb_graph2'			  #ajout  gem facebook
+gem 'mogli'			  #ajout  gem facebook
 
 gem 'rails_12factor', group: :production
 
