@@ -7,12 +7,13 @@ class ScrapFbPros
       # save_from_on_GoogleDrive(tab);
       # https://www.facebook.com/events/
 
+      attr_accessor :access_token
 
       def initialize
         hash_bilobaba = { :old_event_id=>"ID event",  :old_event_name=>"Titre events",  :old_event_start_time=>"Debut",  :old_event_end_time=>"Fin",  :old_event_description=>"Description",  :old_event_place_id=>"ID endroit",  :old_event_place_name=>"Nom endroit",  :old_event_place_location_data=>"Information GPS",
-                          :old_event_place_city=>"City",  :old_event_place_country=>"Pays",  :old_event_place_latitude=>"Latitude",  :old_event_place_longitude=>"Longitude",  :old_event_place_street=>"street",  :old_event_place_zip=>"zip-code",  :old_event_event_times_data=>"récurrences",  :old_last_date=>"date of scrap",  :old_groupe_id=>"group-id" }
+                          :old_event_place_city=>"City",  :old_event_place_country=>"Pays",  :old_event_place_latitude=>"Latitude",  :old_event_place_longitude=>"Longitude",  :old_event_place_street=>"street",  :old_event_place_zip=>"zip-code",  :old_event_event_times_data=>"récurrences",  :old_last_date=>"date of scrap",  :old_groupe_id=>"group-id", :old_event_picture_data_url=>"image-url" }
         hash_sites = { :last_event_id=>"ID event",  :last_event_name=>"Titre events",  :last_event_start_time=>"Debut",  :last_event_end_time=>"Fin",  :last_event_description=>"Description",  :last_event_place_id=>"ID endroit",  :last_event_place_name=>"Nom endroit",  :last_event_place_location_data=>"Information GPS",
-                       :last_event_place_city=>"City",  :last_event_place_country=>"Pays",  :last_event_place_latitude=>"Latitude",  :last_event_place_longitude=>"Longitude",  :last_event_place_street=>"street",  :last_event_place_zip=>"zip-code",  :last_event_event_times_data=>"récurrences",  :last_last_date=>"date of scrap",  :last_groupe_id=>"group-id" }
+                       :last_event_place_city=>"City",  :last_event_place_country=>"Pays",  :last_event_place_latitude=>"Latitude",  :last_event_place_longitude=>"Longitude",  :last_event_place_street=>"street",  :last_event_place_zip=>"zip-code",  :last_event_event_times_data=>"récurrences",  :last_last_date=>"date of scrap",  :last_groupe_id=>"group-id", :last_event_picture_data_url=>"image-url" }
         @hash_head = hash_sites.merge(hash_bilobaba).merge({:change=>"Change"})
         @tab = []
         @tab << @hash_head
@@ -103,16 +104,20 @@ class ScrapFbPros
             @client.set_token(@access_token)
             @client.selection.me.info!
             ENV["token"] = @access_token.to_s;
+            return @access_token.to_s
       end
 
 
       def scrap_events_facebook_groups(group)
           # groups = ScrapFbPros.new.get_all_facebook_groups
-            client = FBGraph::Client.new(:client_id => ENV["app_id"],:secret_id => Figaro.env.secret_id ,:token => ENV["token"])
-            group_page = client.selection.page(group);
-            data_scrapping = group_page.fields(:events).info!
+            @graph = Koala::Facebook::API.new(ENV["token"])
+            @graph.get_object("#{group}?fields=events{photos{images}}")
+            # client = FBGraph::Client.new(:client_id => ENV["app_id"],:secret_id => Figaro.env.secret_id ,:token => ENV["token"])
+            # group_page = client.selection.page(group);
+            # data_scrapping = group_page.fields(:events).info!
 
-            data_scrapping[:events][:data].each do |event|
+            data_scrapping = @graph.get_object("#{group}?fields=events{photos{images},description,event_times,id,name,place,start_time,end_time}")
+            data_scrapping[:events.to_s][:data.to_s].each do |event|
                 tabh = {}
                 if event == nil then break else
 
@@ -120,38 +125,39 @@ class ScrapFbPros
                     tabh[:groupe_id]         = group
                     # tabh[:joker]             =
 
-                    tabh[:event_id]          = event[:id]
-                    tabh[:event_name]        = event[:name]
-                    tabh[:event_start_time]  = event[:start_time]
-                    tabh[:event_end_time]    = event[:end_time]
-                    tabh[:event_description] = event[:description]
+                    tabh[:event_id]          = event[:id.to_s]
+                    tabh[:event_name]        = event[:name.to_s]
+                    tabh[:event_start_time]  = event[:start_time.to_s]
+                    tabh[:event_end_time]    = event[:end_time.to_s]
+                    tabh[:event_description] = event[:description.to_s]
 
                     # tabh[:event_owner_id] = event[:owner][:id]
                     # tabh[:event_owner_name] = event[:owner][:name]
-                    # tabh[:event_picture_data_url] = event[:picture][:data][:url]
+                    # tabh[:event_picture_data_url] = event[:picture.to_s][:data.to_s][:url.to_s]
+                    tabh[:event_picture_data_url] = event[:photos.to_s][:data.to_s][0][:images.to_s][0]
 
                     # tabh[:event_photos_images] = event[:photos][:images][0]
 
-                    if event[:place] != nil then
-                       tabh[:event_place_id]   = event[:place][:id]
-                       tabh[:event_place_name] = event[:place][:name]
-                            if event[:place][:location] != nil then
-                               tabh[:event_place_location_data] = event[:place][:location]
-                               tabh[:event_place_city]          = event[:place][:location][:city]
-                               tabh[:event_place_country]       = event[:place][:location][:country]
-                               tabh[:event_place_latitude]      = event[:place][:location][:latitude]
-                               tabh[:event_place_longitude]     = event[:place][:location][:longitude]
-                               tabh[:event_place_street]        = event[:place][:location][:street]
-                               tabh[:event_place_zip]           = event[:place][:location][:zip]
+                    if event[:place.to_s] != nil then
+                       tabh[:event_place_id]   = event[:place.to_s][:id.to_s]
+                       tabh[:event_place_name] = event[:place.to_s][:name.to_s]
+                            if event[:place.to_s][:location.to_s] != nil then
+                               tabh[:event_place_location_data] = event[:place.to_s][:location.to_s]
+                               tabh[:event_place_city]          = event[:place.to_s][:location.to_s][:city.to_s]
+                               tabh[:event_place_country]       = event[:place.to_s][:location.to_s][:country.to_s]
+                               tabh[:event_place_latitude]      = event[:place.to_s][:location.to_s][:latitude.to_s]
+                               tabh[:event_place_longitude]     = event[:place.to_s][:location.to_s][:longitude.to_s]
+                               tabh[:event_place_street]        = event[:place.to_s][:location.to_s][:street.to_s]
+                               tabh[:event_place_zip]           = event[:place.to_s][:location.to_s][:zip.to_s]
                             end
                     end
-                    tabh[:"event_event_times_data"] = event[:event_times]
+                    tabh[:"event_event_times_data"] = event[:event_times.to_s]
                     if tabh[:"event_event_times_data"] == nil then  @tab << tabh.clone else
                        @tab << tabh.clone                                                                  #sauvegarde event avec ses occurences
-                       event[:event_times].each do |event_time|
-                           tabh[:event_id]                = event_time[:id]
-                           tabh[:event_start_time]        = event_time[:start_time]
-                           tabh[:"event_end_time"]        = event_time[:end_time]
+                       event[:event_times.to_s].each do |event_time|
+                           tabh[:event_id]                = event_time[:id.to_s]
+                           tabh[:event_start_time]        = event_time[:start_time.to_s]
+                           tabh[:"event_end_time"]        = event_time[:end_time.to_s]
                            tabh[:"event_event_times_data"]= ""
                            @tab << tabh.clone                                                              #sauvegarde chaque occurence avec les occurences de l'event principal
                        end
@@ -222,7 +228,7 @@ private
           # code_col_name_hash[:"event_end_time"]             =19
 
 
-          code_col_name_hash[:event_paging_data]              =20
+            code_col_name_hash[:event_paging_data]              =27
           code_col_name_hash[:event_paging_previous]          =21
           code_col_name_hash[:event_paging_next]              =22
 
@@ -230,7 +236,7 @@ private
           code_col_name_hash[:event_admins]                   =24
           code_col_name_hash[:event_owner_id]                 =25
           code_col_name_hash[:event_owner_name]               =26
-          code_col_name_hash[:event_picture_data_url]         =27
+            code_col_name_hash[:event_picture_data_url]         =20
           code_col_name_hash[:event_attending]                =28
           code_col_name_hash[:event_interested]               =29
           code_col_name_hash[:event_photos_images]            =30
