@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 gem 'curb'
-
+gem 'activerecord-diff'           #ajout
 gem 'differ'                      #ajout
 # gem 'httpclient'                  #ajout
 # gem 'http'                        #ajout
