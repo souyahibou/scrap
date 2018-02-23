@@ -17,6 +17,8 @@ class ScrapFbPros
         @hash_head = hash_sites.merge(hash_bilobaba).merge({:change=>"Change"})
         @tab = []
         @tab << @hash_head
+
+        Evenement.where(:origin_base => 'Facebook').destroy_all
       end
 
 
@@ -63,12 +65,19 @@ class ScrapFbPros
       def compare_datas_in_database
           bilobaba_events = Evenement.where(:origin_base=>"Bilobaba")
           facebook_events = Evenement.where(:origin_base=>"Facebook")
+
           facebook_events.each do |fb_event|
             	bb_event = bilobaba_events.find_by(:event_id=> fb_event.event_id)
             	if bb_event.nil?  then fb_event.change ="nouveau" else
-            		fb_event.change =  (fb_event.attributes.except("id", "created_at", "updated_at") == Evenement.last.attributes.except("id", "created_at", "updated_at"))? "no change" : "has changed"
+            		fb_event.change =  (fb_event.attributes.except("id","created_at","updated_at","change","origin_base","last_date") == bb_event.attributes.except("id","created_at","updated_at","change","origin_base","last_date"))? "no change" : "has changed"
             	end
               fb_event.save
+          end
+
+          bilobaba_events.each do |bb_event|
+            	fb_event = facebook_events.find_by(:event_id=> bb_event.event_id)
+            	if fb_event.nil?  then bb_event.change ="supprimé" else bb_event.change ="Toujours Disponible"  end
+              bb_event.save
           end
       end
 
@@ -104,7 +113,7 @@ class ScrapFbPros
 
             data_scrapping = @graph.get_objects(groups, :fields=> "events{photos{images},description,event_times,id,name,place,start_time,end_time}")
             data_scrapping.each_key do |group|
-                group[:events.to_s][:data.to_s].each do |event|
+                data_scrapping[group.to_s][:events.to_s][:data.to_s].each do |event|
                     event_element = Evenement.new
                     if event == nil then break else
 
@@ -122,9 +131,9 @@ class ScrapFbPros
                         # tabh[:event_owner_id] = event[:owner][:id]
                         # tabh[:event_owner_name] = event[:owner][:name]
                         # tabh[:event_picture_data_url] = event[:picture.to_s][:data.to_s][:url.to_s]
-                        event_element.event_picture_data_url = event[:photos.to_s][:data.to_s][0][:images.to_s][0]
+                        # event_element.event_picture_data_url = event[:photos.to_s][:data.to_s][0][:images.to_s][0]
 
-                        # tabh[:event_photos_images] = event[:photos][:images][0]
+                        event_element.event_photos_images = event[:photos.to_s][:data.to_s][0][:images.to_s][0]
 
                         if event[:place.to_s] != nil then
                            event_element.event_place_id   = event[:place.to_s][:id.to_s]
@@ -179,9 +188,11 @@ class ScrapFbPros
           # get_access_token                                                      #all events
           groups = get_all_facebook_groups                                        #get all group ids
           scrap_events_facebook_groups(groups)                                    #scrap events
-          comp_data_in_SpreadSheet                                                #test if change in speadsheet
-          save_from_on_GoogleDrive(@tab)                                          #save in speadsheet
-          comp_data_in_SpreadSheet_2
+          compare_datas_in_database
+          # compare_datas_in_database
+          # comp_data_in_SpreadSheet                                                #test if change in speadsheet
+          # save_from_on_GoogleDrive(@tab)                                          #save in speadsheet
+          # comp_data_in_SpreadSheet_2
           @tab
       end
 
@@ -219,7 +230,7 @@ private
           # code_col_name_hash[:"event_end_time"]             =19
 
 
-            code_col_name_hash[:event_paging_data]              =27
+          code_col_name_hash[:event_paging_data]              =27
           code_col_name_hash[:event_paging_previous]          =21
           code_col_name_hash[:event_paging_next]              =22
 
