@@ -1,0 +1,116 @@
+# Add configuration values here, as shown below.
+#
+# pusher_app_id: "2954"
+# pusher_key: 7381a978f7dd7f9a1117
+# pusher_secret: abdc3b896a0ffb85d373
+# stripe_api_key: sk_test_2J0l093xOyW72XUYJHE4Dv2r
+# stripe_publishable_key: pk_test_ro9jV5SNwGb1yYlQfzG17LHK
+#
+# production:
+#   stripe_api_key: sk_live_EeHnL644i6zo4Iyq4v1KdV9H
+#   stripe_publishable_key: pk_live_9lcthxpSIHbGwmdO941O1XVU
+
+#is secret 1pre­m­i­e­r­e­_app_token
+#is secret 1pre­m­i­e­r­e­_User_Token
+
+
+FACEBOOK_scopes_auths1:  'user_about_me,email , user_location, user_birthday,  user_posts, user_friends, read_custom_friendlists, user_relationship_details, user_relationships,  read_page_mailboxes, rsvp_event, user_events, manage_pages, user_managed_groups, pages_show_list, pages_manage_instant_articles, publish_pages, read_insights, read_custom_friendlists'
+FACEBOOK_scopes_auths2: 'user_about_me,user_events,manage_pages,user_managed_groups,public_profile,user_friends,email'
+FACEBOOK_redirect_uri: 'https://www.facebook.com/connect/login_success.html'
+
+FIRST_USER_TOKEN: "EAAC0LORvfM8BAF1PE0wt5VymNFxibwRB1jaMrzLza0QybbSGNZC3zzwKkcI9EtNSsyBqK1QgEwZCUuWNZBnAhnZCwaUjAYl9C119nYwt9Lar8OJFj84QZAGUYsuEIcafr6oCDll2CtKu53xoxamp0VD4D9lN9zDTAsTWHFxZC9YYEZAzxVEXfI4hzxgvgbq2g4ZD"
+FIRST_APP_TOKEN: "198104904072399|MXufZWMxTSdb4aLwcyrdQz05eRw"
+FIRST_APP_ID: 198104904072399
+app_id: 145634995501895
+app_name: "1pre­m­i­e­r­e­_app"
+app_token: "198104904072399|67ZPL7fMyIp8aWIpV-d5Ilz1mLM"
+client_id: 1926580557382048
+client_token: "a136a3ba83354eaf05b8dcca10899a4d"
+secret_id: 3e22871d8bca02db497b89154df6675d
+token: "EAAC0LORvfM8BALW5bMyn0ZAk5xbZBBmEJBfQm5rBrSogZBvFdqoGfEAG5OPKzw5emibueDVARFOrAXiaE7LOdYMBHbf2u1LI1emCKY5ywmT7lrcVPCOuiTaBZCwaWS9wxIl5Sknu95YAC6EXdosxOOwdwbSm9eRZB0yQIwvJZCEAZDZD"
+
+SPREADSHEET_SCRAPPING_FB_EVENTS: "1MxgK4pdG5LVvCse6dRTtgjhZEux8rZ6Z9Zk0IlAPYnQ"
+SPEADSHEET_SCRAPPING_URLS:  "1CN2vSF0gMWrTC5tyKNvE_yAolLLDmWS4e_MFZo8aQ94"
+SPEADSHEET_LIENS_ET_IDS:  "1i1nJMmpzspjPtJQ2LMI4qrXy3SfgmlafcBDBBpcVkSw"
+
+LOCAL_OR_HEROKU: 1
+#not push this variable on heroku or mettre sa valeur à zero
+
+# 1srt config of google_drive api with confirmation
+GOOGLE_client_id: "452925651630-egr1f18o96acjjvphpbbd1qlsevkho1d.apps.googleusercontent.com"
+GOOGLE_client_secret: "1U3-Krii5x1oLPrwD5zgn-ry"
+GOOGLE_refresh_token: "1/uiNI05LilVtQN00Wk6dFj_946nxkEiQTBy_qpHeh7zWL_MEK7jsceQHAM57nzAW6"
+GOOGLE_redirect_uri: "http://localhost:3000/"
+
+#2srt config of google_drive api for server
+
+# type: "service_account"
+# project_id: "my-project-spreedsheets"
+# private_key_id: "b95e2e2577b5aa89f237f3ed5adcd2bd46845399"
+# # private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC1f6/GQYNrh2ab\n79exTLan/8zBU1LQ9Rhpw8co7ybaS8G472p9Kl8HH7G1yxraSs9OjRDBrHBJagr/\nnhPuHgxtqe9AXARj8MVrKU9pSRaMU9Li7J8FlENQzN5RY138Ew1pVFxmmRuV2lcT\npFESQ+iwA+4FEPcsgXTJzo0Bgvvoxmg5MYMPSTPZLAnWVfPj2uLNJzQ5C8YVr1Hk\nfoquKSNcvwIzN9ljnBY2tb14nyP9NMR73a39BgTgdAMjzD0pwhtTKl+vjsIpvQGB\nNn9nSYvd9f4e5l7Y728n+WXoHfqAPocoLfO8NrFAoftqAGP8Ixk0D22XzzLQ/F4+\nDDPH7XIpAgMBAAECggEAHrAVP1dKaj79mXYnKSJIbAVzUGjPQud+Fjv1C7XMAvL2\nMVfB0KH+aUzxlkReKPSnMqflYmnOnosgivHmesd34H7wJhio4WEPcDwO4kVqW5W8\nvYO2q5HTA/Fv0aEUfg+Wn+2UpgBTSrYdLQQGdSkoScKQVyj0MgE9hvW2n7/O6h+B\nCGH6NQdDw9vyR2tXaQdKNwI62/0oTJ5DZAD340A2l3p8VqJsmRn+Lw/7I6/3hlYG\nhux9WtAMOVl7pvsRPO94spjLe+Rdo0v9lKJHWBJOBnt3jtRCJ1IZk49oaqOtHFrp\n8Fp/TVRssWNaMu5LIon1H1drnWgFly5KT3AKNOuoJQKBgQDeSeA8aWbHySQZAAck\nLKCMrq2R03AxjI6gJhPk7W/IFjrrFi+g/A496+biukZX6ZDDjUrF3DiKk82ZZJbw\ne5NIYCelg8qpeykjJxUjjbMnCJQHAfbc2hvkSKETqRDotzZ8/PbAigCmVmmTKAj9\nMjLl1hzf8hiLxC7sTyMQyCLBWwKBgQDRBjBXU/OjaeI7723df9ucLq7R0k4cSrEE\nHx2mI/h0Elk3UM9/gI+AboVWWaPgMS0ZAYpr8dNkIoSFgWpKt3Qp1irO8otYGzzd\n8eUD6dBJamf+f7/qtMbQuC+7A/m9BWXgL2kEZO16EN61mUKBryMagG1YPPOY6BJ2\n3EJAbs2NywKBgB41F93dzPPVZ6xmDpJh5id4DWpFu3dgTHmC8y0m/wvHyZXs2+ga\nmKzdg/DHs4t62AtbBhBBTwW19DimLMTdZjRtrLWXZVEGxZ5bT0oXlYL2bXdOUwfM\nNAIfxJPxY7TcQPFXRwj/N/tivtIanK4bxkLph97+/UrxDBdc4b0EFYUFAoGBALp3\nKui8m7xL2OZe0UOnq+HIQ2wqkEPs3b0vhOORczMYqz4NeQ3lQh7weUJu9SIqvHBy\nT2m8cTgDEvWGXawJvDcWN1omROh0Y/gaspKrIoRbyCnhDPP0EOhhZzMOeNuG1TsJ\nEEY7Qx6BriuSbSIDeu1JZEIzHZxqaw5drzyLnBPBAoGBAJab8nIRU06Oqks4VdEl\nfn1GjxoZeXbPAWy8+127ssvY7uc0tLg25N4XwXyNzHtxGOd1iUbqdaTofRb5guJO\na+wD+wuK3mzrGqZ9dIx8tY1vezGNMFBeYSiO/rrrh5Gw0IvpdIlul61HgZasOioK\ntwjxmlc4z/c4odysuTa1QUeC\n-----END PRIVATE KEY-----\n",
+# client_email: "projet-bilobaba@my-project-spreedsheets.iam.gserviceaccount.com"
+# client_id: "100534809632871689168"
+# auth_uri: "https://accounts.google.com/o/oauth2/auth"
+# token_uri: "https://accounts.google.com/o/oauth2/token"
+# auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs"
+# client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/projet-bilobaba%40my-project-spreedsheets.iam.gserviceaccount.com"
+
+
+
+
+# ENV["LOCAL_OR_HEROKU"]
+
+# ENV["app_id"]     = Figaro.env.app_id
+# ENV["app_name"]   = Figaro.env.app_name
+# ENV["app_token"]  = Figaro.env.app_token
+# ENV["client_id"]  = Figaro.env.client_id
+# ENV["secret_id"]  = Figaro.env.secret_id
+# ENV[client_token] = Figaro.env.client_token   71d6235adb64813d83ea0f6700fe914a
+# ENV["token"]      = Figaro.env.token
+
+#  1053701910376-tub1g21gt8r149ge8eatfojs7u069nt6.apps.googleusercontent.com
+#   Oz2SRxb8lsdBS3MvPx4gU8Hf
+#
+#
+#   require "googleauth"
+#
+# credentials = Google::Auth::UserRefreshCredentials.new(
+#   client_id: "1053701910376-tub1g21gt8r149ge8eatfojs7u069nt6.apps.googleusercontent.com",
+#   client_secret: "Oz2SRxb8lsdBS3MvPx4gU8Hf",
+#   scope: [
+#     "https://www.googleapis.com/auth/drive",
+#     "https://spreadsheets.google.com/feeds/",
+#   ],
+#   redirect_uri: "http://example.com/redirect")
+# auth_url = credentials.authorization_uri
+#
+# credentials.code = authorization_code
+# credentials.fetch_access_token!
+#
+# credentials.refresh_token = refresh_token
+# credentials.fetch_access_token!
+#
+# session = GoogleDrive::Session.from_credentials(credentials)
+
+# ScrapFbPros.app_id = ENV["pusher_app_id"] = Figaro.env.pusher_app_id
+# ScrapFbPros.key    = ENV["pusher_key"]
+# ScrapFbPros.secret = ENV["pusher_secret"]
+# heroku config:set google_analytics_key=UA-35722661-5
+# figaro heroku:set -e production
+# figaro help heroku:set
+# Koala::Facebook::OAuth.new(APP_ID, APP_SECRET, SITE_URL + 'facebooks/callback')
+
+
+# app_id= 145634995501895
+# app_name= 1pre­m­i­e­r­e­_app
+# app_token= "198104904072399|67ZPL7fMyIp8aWIpV-d5Ilz1mLM"
+# client_id= 1926580557382048
+# client_token= a136a3ba83354eaf05b8dcca10899a4d
+# secret_id= 3e22871d8bca02db497b89154df6675d
+# token= EAACEdEose0cBAKzmNoaQCdwZCSipyPXc1f7H02p6JRv13lyBEtNySnfOPKsQjWtGw7tYHTq1iDIKOVArMLOi6yNKBzaQgt1Frt7QYUmbIIwhcZBweiWRkuxm8TeiGVb2nHDMVTPKuUJiOY9jIIBxwyYUKhXoPEAFnkitfbNgVG1ew59CQje1Dh8EZA3p24ZD
+# SPREADSHEET_SCRAPPING_FB_EVENTS= 1MxgK4pdG5LVvCse6dRTtgjhZEux8rZ6Z9Zk0IlAPYnQ
+# SPEADSHEET_SCRAPPING_URLS=  1CN2vSF0gMWrTC5tyKNvE_yAolLLDmWS4e_MFZo8aQ94
+# SPEADSHEET_LIENS_ET_IDS=  1i1nJMmpzspjPtJQ2LMI4qrXy3SfgmlafcBDBBpcVkSw
+# client_id= 452925651630-egr1f18o96acjjvphpbbd1qlsevkho1d.apps.googleusercontent.com
+# client_secret= 1U3-Krii5x1oLPrwD5zgn-ry
+# refresh_token= 1/uiNI05LilVtQN00Wk6dFj_946nxkEiQTBy_qpHeh7zWL_MEK7jsceQHAM57nzAW6
