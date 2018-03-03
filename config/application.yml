@@ -13,7 +13,6 @@
 #is secret 1pre­m­i­e­r­e­_app_token
 #is secret 1pre­m­i­e­r­e­_User_Token
 
-
 FACEBOOK_scopes_auths1:  'user_about_me,email , user_location, user_birthday,  user_posts, user_friends, read_custom_friendlists, user_relationship_details, user_relationships,  read_page_mailboxes, rsvp_event, user_events, manage_pages, user_managed_groups, pages_show_list, pages_manage_instant_articles, publish_pages, read_insights, read_custom_friendlists'
 FACEBOOK_scopes_auths2: 'user_about_me,user_events,manage_pages,user_managed_groups,public_profile,user_friends,email'
 FACEBOOK_redirect_uri: 'https://www.facebook.com/connect/login_success.html'

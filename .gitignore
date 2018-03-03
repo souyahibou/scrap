@@ -17,3 +17,9 @@
 /yarn-error.log
 
 .byebug_history
+
+# Ignore application configuration
+/config/application_fb.yml
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/CAJ.pdf
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/CAJparse
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/PDF_parse_stage_CAJ_Project.rb

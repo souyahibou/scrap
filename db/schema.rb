@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180221132155) do
+ActiveRecord::Schema.define(version: 20180302075738) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,8 @@ ActiveRecord::Schema.define(version: 20180221132155) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "origin_base"
+    t.text "event_owner_id"
+    t.text "changements"
     t.index ["origin_base"], name: "index_evenements_on_origin_base"
   end
 

@@ -7,21 +7,24 @@ class ScrapFbPros
       attr_accessor :access_token
 
       def initialize
-        hash_bilobaba = { :old_event_id=>"ID event",  :old_event_name=>"Titre events",  :old_event_start_time=>"Debut",  :old_event_end_time=>"Fin",  :old_event_description=>"Description",  :old_event_place_id=>"ID endroit",  :old_event_place_name=>"Nom endroit",  :old_event_place_location_data=>"Information GPS",
+        hash_bilobaba = { :old_event_id=>"ID event",  :old_event_name=>"Titre events",  :old_event_start_time=>"Debut",  :old_event_end_time=>"Fin",  :old_event_description=>"Description",  :old_event_place_id=>"ID endroit",  :old_event_place_name=>"Nom endroit",  :old_event_place_location_data=>"Information GPS",:event_owner_id=>"propriétaire_id", :event_owner_name=>"propriétaire_name", :changements=>"fields_changed",
                           :old_event_place_city=>"City",  :old_event_place_country=>"Pays",  :old_event_place_latitude=>"Latitude",  :old_event_place_longitude=>"Longitude",  :old_event_place_street=>"street",  :old_event_place_zip=>"zip-code",  :old_event_event_times_data=>"récurrences",  :old_last_date=>"date of scrap",  :old_groupe_id=>"group-id", :old_event_picture_data_url=>"image-url", :origin_base => "origine"}
-        hash_sites = { :last_event_id=>"ID event",  :last_event_name=>"Titre events",  :last_event_start_time=>"Debut",  :last_event_end_time=>"Fin",  :last_event_description=>"Description",  :last_event_place_id=>"ID endroit",  :last_event_place_name=>"Nom endroit",  :last_event_place_location_data=>"Information GPS",
-                       :last_event_place_city=>"City",  :last_event_place_country=>"Pays",  :last_event_place_latitude=>"Latitude",  :last_event_place_longitude=>"Longitude",  :last_event_place_street=>"street",  :last_event_place_zip=>"zip-code",  :last_event_event_times_data=>"récurrences",  :last_last_date=>"date of scrap",  :last_groupe_id=>"group-id", :last_event_picture_data_url=>"image-url", :origin_base => "origine" }
+        hash_sites = { :last_event_id=>"ID event",  :last_event_name=>"Titre events",  :last_event_start_time=>"Debut",  :last_event_end_time=>"Fin",  :last_event_description=>"Description",  :last_event_place_id=>"ID endroit",  :last_event_place_name=>"Nom endroit",  :last_event_place_location_data=>"Information GPS",:event_owner_id=>"propriétaire_id", :event_owner_name=>"propriétaire_name", :changements=>"fields_changed",
+                       :last_event_place_city=>"City",  :last_event_place_country=>"Pays",  :last_event_place_latitude=>"Latitude",  :last_event_place_longitude=>"Longitude",  :last_event_place_street=>"street",  :last_event_place_zip=>"zip-code",  :last_event_event_times_data=>"récurrences",  :last_last_date=>"date of scrap",  :last_groupe_id=>"group-id", :last_event_picture_data_url=>"image-url", :origin_base => "origine"}
+
         @hash_head = hash_sites.merge(hash_bilobaba).merge({:change=>"Change"})
         @tab = []
         @tab << @hash_head
 
         Evenement.where(:origin_base => 'Facebook').destroy_all
 
-        @fields_of_events             = "events{photos{images},description,event_times,id,name,place,start_time,end_time}"
+        @fields_of_events             = "events{photos{images},description,event_times,id,name,place,start_time,end_time,owner,updated_time}"
 
         @database_of_events           = Evenement
 
-        @champs_exclus_in_compare     = "id","created_at","updated_at","change","origin_base","last_date"
+        @champs_exclus_in_compare     = "id","created_at","updated_at","change","origin_base","last_date","changements"
+
+        @champs_exclus_in_compareInSym = @champs_exclus_in_compare.map{ |elemt| elemt.to_sym }
 
         @msg_event_changed            = "has changed"
         @msg_event_unchanged          = "no change"
@@ -31,7 +34,26 @@ class ScrapFbPros
 
         @data_origin_base_in_bilobaba = "Bilobaba"
         @data_origin_base_in_facebook = "Facebook"
+
+        @access_token                 = ENV["token"]
+        # :client_id => ENV["FIRST_APP_ID"]
+        # :secret_id => Figaro.env.secret_id
+        # :redirect_uri => ENV["FACEBOOK_redirect_uri"]
+        # :scope => ENV["FACEBOOK_scopes_auths2"]
+        # ENV["FACEBOOK_EMAIL"]
+        # ENV["FACEBOOK_MDP"]
+
+        # ENV["LOCAL_OR_HEROKU"]
+        # "client_id": ENV["GOOGLE_client_id"]
+        # "client_secret": ENV["GOOGLE_client_secret"]
+        # "refresh_token": ENV["GOOGLE_refresh_token"]
+        # "redirect_uri": ENV["GOOGLE_redirect_uri"]
+
+        # ENV["SPEADSHEET_LIENS_ET_IDS"]
       end
+
+
+
 
 
       def get_token
@@ -57,15 +79,20 @@ class ScrapFbPros
 
           facebook_events.each do |fb_event|
             	bb_event = bilobaba_events.find_by(:event_id=> fb_event.event_id)
+              # binding.pry
             	if bb_event.nil?  then fb_event.change = @msg_event_new_in_fb else
-            		fb_event.change =  (fb_event.attributes.except(@champs_exclus_in_compare) == bb_event.attributes.except(@champs_exclus_in_compare))? @msg_event_unchanged : @msg_event_changed
+                fb_event.changements = fb_event.diff(bb_event).except(*@champs_exclus_in_compareInSym, :event_owner_name,:event_owner_id) #colonne affichant les champs qui ont changés
+            		fb_event.change =  (fb_event.attributes.except(*@champs_exclus_in_compare, "event_owner_name", "event_owner_id") == bb_event.attributes.except(*@champs_exclus_in_compare, "event_owner_name", "event_owner_id"))? @msg_event_unchanged : @msg_event_changed
             	end
               fb_event.save
           end
 
           bilobaba_events.each do |bb_event|
             	fb_event = facebook_events.find_by(:event_id=> bb_event.event_id)
-            	if fb_event.nil?  then bb_event.change =@msg_event_deleted_in_fb else bb_event.change = @msg_event_undeleted_in_fb  end
+              if fb_event.nil?  then bb_event.change =@msg_event_deleted_in_fb else
+                bb_event.changements = fb_event.diff(bb_event).except(*@champs_exclus_in_compareInSym, :event_owner_name,:event_owner_id) #colonne affichant les champs qui ont changés
+                bb_event.change = @msg_event_undeleted_in_fb
+              end
               bb_event.save
           end
       end
@@ -74,7 +101,7 @@ class ScrapFbPros
 
       def scrap_events_facebook_groups(groups, database)
           # groups = ScrapFbPros.new.get_all_facebook_groups
-            @graph = Koala::Facebook::API.new(ENV["token"])
+            @graph = Koala::Facebook::API.new(@access_token)
 
             data_scrapping = @graph.get_objects(groups, :fields=> @fields_of_events)
             data_scrapping.each_key do |group|
@@ -92,8 +119,9 @@ class ScrapFbPros
                         event_element.event_end_time    = event[:end_time.to_s]
                         event_element.event_description = event[:description.to_s]
 
-                        # tabh[:event_owner_id] = event[:owner][:id]
-                        # tabh[:event_owner_name] = event[:owner][:name]
+                        event_element.event_owner_id    = event[:owner.to_s][:id.to_s]
+                        event_element.event_owner_name  = event[:owner.to_s][:name.to_s]
+                        # event_element.event_updated_time  = event[:updated_time]
                         # tabh[:event_picture_data_url] = event[:picture.to_s][:data.to_s][:url.to_s]
                         # event_element.event_picture_data_url = event[:photos.to_s][:data.to_s][0][:images.to_s][0]
 
@@ -130,7 +158,6 @@ class ScrapFbPros
          @tab += ActiveRecord::Base.connection.exec_query("SELECT #{database.table_name}.* FROM #{database.table_name}").to_hash
       end
 
-
       # ScrapFbPros.new.get_all_facebook_groups
 
       def perform
@@ -139,6 +166,9 @@ class ScrapFbPros
           compare_datas_in_database(@database_of_events)                          #edit/update the events status
           @tab                                                                    #allow to print the database
       end
+################################################################################################################################################################################################
+################################################################################################################################################################################################
+################################################################################################################################################################################################
 
 private
 
@@ -172,4 +202,69 @@ private
             ENV["token"] = @access_token.to_s;
             return @access_token.to_s
       end
+
+
+      #these 2 functions is exactly similar to the function existing in ScrapUrlsPros class by the call: ScrapUrlsPros.new.set_browser_session   &   ScrapUrlsPros.new.set_google_drive_session
+
+      # def new_browser
+      #     if ENV["LOCAL_OR_HEROKU"] then
+      #         Watir::Browser.new :firefox
+      #     else
+      #         options = Selenium::WebDriver::Chrome::Options.new
+      #         # make a directory for chrome if it doesn't already exist
+      #         chrome_dir = File.join Dir.pwd, %w(tmp chrome)
+      #         FileUtils.mkdir_p chrome_dir
+      #         user_data_dir = "--user-data-dir=#{chrome_dir}"
+      #         # add the option for user-data-dir
+      #         options.add_argument user_data_dir
+      #
+      #         # let Selenium know where to look for chrome if we have a hint from
+      #         # heroku. chromedriver-helper & chrome seem to work out of the box on osx,
+      #         # but not on heroku.
+      #         if chrome_bin = ENV["GOOGLE_CHROME_BIN"]
+      #            options.add_argument "no-sandbox"
+      #            options.binary = chrome_bin
+      #            # give a hint to here too
+      #            Selenium::WebDriver::Chrome.driver_path = \
+      #              "/app/vendor/bundle/bin/chromedriver"
+      #         end
+      #
+      #         # headless!
+      #         # keyboard entry wont work until chromedriver 2.31 is released
+      #         options.add_argument "window-size=1200x600"
+      #         options.add_argument "headless"
+      #         options.add_argument "disable-gpu"
+      #
+      #         # make the browser
+      #         Watir::Browser.new :chrome, options: options
+      #     end
+      # end
+      #
+      #
+      # # ouverture nouvelle session
+      # def connexion_to_GoogleDrive type_connex = nil
+      #     type_connex ||= "none"
+      #     credentials = Google::Auth::UserRefreshCredentials.new(
+      #           "client_id": ENV["GOOGLE_client_id"],
+      #           "client_secret": ENV["GOOGLE_client_secret"],
+      #           "scope": [
+      #                     "https://www.googleapis.com/auth/drive",
+      #                     "https://spreadsheets.google.com/feeds/"
+      #                    ],
+      #           "refresh_token": ENV["GOOGLE_refresh_token"],
+      #           "redirect_uri": ENV["GOOGLE_redirect_uri"])
+      #     auth_url = credentials.authorization_uri
+      #
+      #     case type_connex
+      #          when "first"     then  credentials.code = authorization_code  #si la clé existe et est vide
+      #          when "refresh"   then  credentials.refresh_token = refresh_token
+      #          when "none"      then  ""
+      #          else                   ""
+      #     end
+      #
+      #     credentials.fetch_access_token!
+      #     session = GoogleDrive::Session.from_credentials(credentials)
+      #     session
+      #     # session = GoogleDrive::Session.from_config("config.json")
+      # end
 end
