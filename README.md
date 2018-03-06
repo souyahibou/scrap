@@ -28,9 +28,11 @@ Things you may want to cover:
 #Tutoriel des fonctionnalités:
 
 ##fichiers importants:
-*/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/services/scrap_fb_pros.rb*
-*/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/services/scrap_urls_pros.rb*
-*/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/config/application.yml*
+```
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/services/scrap_fb_pros.rb
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/services/scrap_urls_pros.rb
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/config/application.yml
+``
  <!-- ENV["token"]
 # :client_id => ENV["FIRST_APP_ID"]
 # :secret_id => Figaro.env.secret_id
@@ -47,12 +49,14 @@ Things you may want to cover:
 
 # ENV["SPEADSHEET_LIENS_ET_IDS"] -->
 
+```
 */home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/views/scrappings/home.html.erb*
 */home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/views/scrappings/search.html.erb*
 */home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/views/scrappings/search2.html.erb*
 
 */home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/models/evenement.rb*
 */home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/db/schema.rb*
+```
 
 ```ruby
 */home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/Gemfile*
@@ -82,8 +86,11 @@ root 'scrappings#home'
 
 
 ##pour récupérer un token via ScrapFbPros.new.get_token:
+
+```ruby
 1 mettre ses identifiant Facebook
             ENV["FACEBOOK_EMAIL"]
             ENV["FACEBOOK_MDP"]
 2 copié le nouveau token et remplacer l'ancien token de la variable environnement ENV["token"] par le nouveau token récupéré. Ce token est valide pendant 6mois.
             2 bis possibilité d'utiliser le token disponible via l'interface API graph facebook, celui-ci est valide pendant 1 heure. 
+```
