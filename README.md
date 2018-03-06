@@ -25,14 +25,14 @@ Things you may want to cover:
 # Scrapping_Professors1
 
 
-#Tutoriel des fonctionnalités:
+# Tutoriel des fonctionnalités:
 
-##fichiers importants:
+## fichiers importants:
 ```
 /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/services/scrap_fb_pros.rb
 /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/services/scrap_urls_pros.rb
 /home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/config/application.yml
-``
+```
  <!-- ENV["token"]
 # :client_id => ENV["FIRST_APP_ID"]
 # :secret_id => Figaro.env.secret_id
@@ -50,12 +50,12 @@ Things you may want to cover:
 # ENV["SPEADSHEET_LIENS_ET_IDS"] -->
 
 ```
-*/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/views/scrappings/home.html.erb*
-*/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/views/scrappings/search.html.erb*
-*/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/views/scrappings/search2.html.erb*
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/views/scrappings/home.html.erb
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/views/scrappings/search.html.erb
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/views/scrappings/search2.html.erb
 
-*/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/models/evenement.rb*
-*/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/db/schema.rb*
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/app/models/evenement.rb
+/home/syb8/Documents/Projet_Final/fonctionalite_scrap/Scrap_pro4/db/schema.rb
 ```
 
 ```ruby
@@ -78,14 +78,14 @@ root 'scrappings#home'
 ```
 
 
-##Démarche pour récupérer les événements sur facebook:
-*étape n°0 :avoir les variable d'environnement définies
-*étape n°1 :récupérer/Avoir un token valide:                     ScrapFbPros.new.get_token(ou par un autre moyen possible)
-*étape n°2 :créer une table de BDD suivant le modèle Evenement   rails db:create
-*étape n°3 :Lancer le programme principal:                       ScrapFbPros.new.perform
+## Démarche pour récupérer les événements sur facebook:
+* étape n°0 :avoir les variable d'environnement définies
+* étape n°1 :récupérer/Avoir un token valide:                     ScrapFbPros.new.get_token(ou par un autre moyen possible)
+* étape n°2 :créer une table de BDD suivant le modèle Evenement   rails db:create
+* étape n°3 :Lancer le programme principal:                       ScrapFbPros.new.perform
 
 
-##pour récupérer un token via ScrapFbPros.new.get_token:
+## pour récupérer un token via ScrapFbPros.new.get_token:
 
 ```ruby
 1 mettre ses identifiant Facebook
