@@ -5,6 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 gem 'paper-pdf-parser'
+gem 'watir-scroll'                 #ajout
 
 gem 'curb'
 gem 'activerecord-diff'           #ajout
